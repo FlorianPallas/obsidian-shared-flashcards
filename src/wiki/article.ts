@@ -31,7 +31,7 @@ export class Article {
 
   parseCards(content: string) {
     for (const match of content.matchAll(
-      /^(?<level>#{0,6}) (?<front>[^\n]+?) #card$\n*(?<back>(?:[^\n]*\n)*?)\n*\^c-(?<label>[a-zA-Z0-9]{10})$/gm
+      /^(?<level>#{0,6}) (?<front>[^\n]+?) #card *$\n*(?<back>(?:[^\n]*\n)*?)\n*\^c-(?<label>[a-zA-Z0-9]{10})$/gm
     )) {
       const groups = match.groups ?? {};
       if (match.index === undefined) {
