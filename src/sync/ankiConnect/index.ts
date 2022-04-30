@@ -82,10 +82,13 @@ export class AnkiConnectSyncService implements SyncService {
     const id = this.plugin.labelMap.get(card.label);
 
     const rootDeck = this.plugin.settings.rootDeck;
-    let deck = rootDeck;
+    let deckName = rootDeck;
     if (this.plugin.settings.useFolderDecks) {
-      const deckPath = rootDeck + '/' + card.article.file.parent.path;
-      deck = deckPath.replace(/\//g, '::');
+      const deckPath =
+        rootDeck.trim().length > 0 ? '/' : '' + card.article.file.parent.path;
+      console.log(deckPath);
+
+      deckName = deckPath.replace(/\//g, '::');
     }
 
     const media: [string, string][] = [];
@@ -109,7 +112,7 @@ export class AnkiConnectSyncService implements SyncService {
 
     const note: Note = {
       id,
-      deckName: deck,
+      deckName,
       modelName: 'Basic',
       fields: {
         Front: card.front,
