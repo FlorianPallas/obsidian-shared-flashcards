@@ -1,0 +1,30 @@
+{
+  "name": "advanced-flashcards",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "test": "jest",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "release": "standard-version"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "obsidian": "^0.14.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.182",
+    "@types/node": "^16.x.x",
+    "builtin-modules": "^3.2.0",
+    "esbuild": "^0.14.38",
+    "jest": "^27.5.1",
+    "prettier": "^2.6.2",
+    "standard-version": "^9.3.2",
+    "ts-jest": "^27.1.4",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.4"
+  },
+  "packageManager": "yarn@3.2.0"
+}

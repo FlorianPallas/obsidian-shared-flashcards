@@ -1,0 +1,15 @@
+# dependencies
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+node_modules
+
+# build artifacts
+main.js
+
+# obsidian
+data.json
