@@ -85,9 +85,9 @@ export class AnkiConnectSyncService implements SyncService {
     let deckName = rootDeck;
     if (this.plugin.settings.useFolderDecks) {
       const deckPath =
-        rootDeck.trim().length > 0 ? '/' : '' + card.article.file.parent.path;
-      console.log(deckPath);
-
+        rootDeck +
+        (rootDeck.trim().length > 0 ? '/' : '') +
+        card.article.file.parent.path;
       deckName = deckPath.replace(/\//g, '::');
     }
 
