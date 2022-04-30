@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.1...v0.1.2) (2022-04-30)
+
+
+### Bug Fixes
+
+* prevent deck names from generating as blank ([7ff59ec](https://github.com/FlorianPallas/advanced-flashcards/commit/7ff59ecc9c85ec4e575684bc96164cf749436a85))
+
 ### [0.1.1](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.0...v0.1.1) (2022-04-30)
 
 
