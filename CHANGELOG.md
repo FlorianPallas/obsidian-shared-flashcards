@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.2...v0.1.3) (2022-05-04)
+
+
+### Features
+
+* allow cards to be deleted, recreated when known and moved ([bea2eb9](https://github.com/FlorianPallas/advanced-flashcards/commit/bea2eb9dbe85e291b3ad6851604856507c1494c2))
+* render markdown in anki ([c15bfb1](https://github.com/FlorianPallas/advanced-flashcards/commit/c15bfb19a88940312fb140cc2dadb13689a00ac2))
+
 ### [0.1.2](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.1...v0.1.2) (2022-04-30)
 
 
