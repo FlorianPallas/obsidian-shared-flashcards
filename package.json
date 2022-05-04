@@ -11,7 +11,11 @@
   "license": "MIT",
   "dependencies": {
     "lodash": "^4.17.21",
-    "obsidian": "^0.14.6"
+    "obsidian": "^0.14.6",
+    "rehype-stringify": "^9.0.3",
+    "remark-parse": "^10.0.1",
+    "remark-rehype": "^10.1.0",
+    "unified": "^10.1.2"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

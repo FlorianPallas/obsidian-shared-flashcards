@@ -4,7 +4,7 @@ import AnkiBridge from './bridge';
 import { Note } from './types';
 import { Notice } from 'obsidian';
 import { Article, Card } from '../../wiki';
-import { arrayBufferToBase64, stringToBase64 } from 'src/util';
+import { arrayBufferToBase64 } from 'src/util';
 import {
   AddNotesRequest,
   CreateDeckRequest,
@@ -14,6 +14,7 @@ import {
   DeleteNotesRequest,
   ChangeDeckRequest,
 } from './requests';
+import { processMarkdown } from './util';
 
 interface CardRecord {
   card: Card;
@@ -126,7 +127,7 @@ export class AnkiConnectSyncService implements SyncService {
 
     for (const article of articles) {
       for (const card of article.cards) {
-        const record = this.getRecord(card);
+        const record = await this.getRecord(card);
         const { ankiNote } = record;
 
         if (!ankiNote.id) {
@@ -171,7 +172,7 @@ export class AnkiConnectSyncService implements SyncService {
     return [cardsToCreate, cardsToUpdate, cardsToDelete];
   }
 
-  private getRecord(card: Card): CardRecord {
+  private async getRecord(card: Card): Promise<CardRecord> {
     const id = this.plugin.labelMap.get(card.label);
 
     const rootDeck = this.plugin.settings.rootDeck;
@@ -187,32 +188,15 @@ export class AnkiConnectSyncService implements SyncService {
       deckName = 'Default';
     }
 
-    const media: [string, string][] = [];
+    const ankiMedia: [string, string][] = [];
 
-    const back = card.back
-      .replace(
-        /!\[(.*)\]\((.*\.(?:png|jpg|jpeg|gif|bmp|svg|tiff))(?: "(.*)")?\)/gi,
-        (_match, alt: string, filePath: string, title?: string) => {
-          const src = stringToBase64(filePath);
-          media.push([src, filePath]);
-          return `<img src="${src}" alt="${alt}" title="${title ?? ''}">`;
-        }
-      )
-      .replace(
-        /\[(.*?)\]\((.*?)\)/g,
-        (_match, text: string, href: string) => `<a href="${href}">${text}</a>`
-      )
-      .replace(/\$\$(.*?)\$\$/gs, (_match, body: string) => `\\[${body}\\]`)
-      .replace(/\$(.*?)\$/g, (_match, body: string) => `\\(${body}\\)`)
-      .replace(/\n/g, '<br>');
-
-    const note: Note = {
+    const ankiNote: Note = {
       id,
       deckName,
       modelName: 'Basic',
       fields: {
-        Front: card.front,
-        Back: back,
+        Front: await processMarkdown(card.front, ankiMedia),
+        Back: await processMarkdown(card.back, ankiMedia),
       },
       tags: [],
       options: {
@@ -226,6 +210,6 @@ export class AnkiConnectSyncService implements SyncService {
       },
     };
 
-    return { card, ankiNote: note, ankiMedia: media };
+    return { card, ankiNote, ankiMedia };
   }
 }
