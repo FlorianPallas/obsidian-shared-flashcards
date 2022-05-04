@@ -2,6 +2,10 @@ import { Notice, Setting } from 'obsidian';
 import FlashcardsPlugin from 'src';
 import { SettingsLoader } from 'src/config/loaders/SettingsLoader';
 import AnkiBridge from 'src/sync/ankiConnect/bridge';
+import {
+  PermissionRequest,
+  VersionRequest,
+} from 'src/sync/ankiConnect/requests';
 import { Text, Fold } from '../components';
 
 export class SyncCategory {
@@ -85,12 +89,12 @@ export class SyncCategory {
         button.setButtonText('Test').onClick(async () => {
           let version: number;
           try {
-            version = await new AnkiBridge(plugin).version();
+            version = await new AnkiBridge(plugin).send(new VersionRequest());
           } catch (error) {
             new Notice('Could not connect to Anki Connect');
             return;
           }
-          if (version !== AnkiBridge.VERSION) {
+          if (version !== 6) {
             new Notice('Anki Connect version is not compatible');
             return;
           }
@@ -99,8 +103,10 @@ export class SyncCategory {
       })
       .addButton((button) => {
         button.setButtonText('Grant Permission').onClick(async () => {
-          const success = await new AnkiBridge(plugin).requestPermission();
-          if (!success) {
+          const { permission } = await new AnkiBridge(plugin).send(
+            new PermissionRequest()
+          );
+          if (permission !== 'granted') {
             new Notice('Permission denied');
             return;
           }
