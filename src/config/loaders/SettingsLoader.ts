@@ -9,7 +9,7 @@ export class SettingsLoader {
     useFolderDecks: true,
 
     // Labels
-    useLabels: false,
+    useLabels: true,
     labelMapPath: '.flashcards/default.json',
 
     // Sync

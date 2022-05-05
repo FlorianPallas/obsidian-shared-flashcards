@@ -20,11 +20,17 @@ export class CollaborationCategory {
         'Instead of identifying cards by client specific ids, use labels to let each user have their own set of cards.'
       )
       .addToggle((toggle) => {
-        toggle.setValue(plugin.settings.useLabels).onChange((value) => {
-          plugin.settings.useLabels = value;
-          plugin.save();
-          this.labelsFold?.setExpanded(value);
-        });
+        toggle
+          .setValue(plugin.settings.useLabels)
+          .setDisabled(true)
+          .onChange((value) => {
+            plugin.settings.useLabels = value;
+            plugin.save();
+            this.labelsFold?.setExpanded(value);
+          });
+
+        toggle.toggleEl.style.opacity = '0.5';
+        toggle.toggleEl.style.pointerEvents = 'none';
       });
 
     this.labelsFold = new Fold(containerEl).setExpanded(
