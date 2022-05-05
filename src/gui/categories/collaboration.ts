@@ -43,11 +43,14 @@ export class CollaborationCategory {
           });
       })
       .addButton((button) => {
-        button.setButtonText('Save').onClick(() => {
+        button.setButtonText('Load').onClick(async () => {
           plugin.settings.labelMapPath =
             this.tempLabelMapPath ?? plugin.settings.labelMapPath;
-          plugin.save();
-          new Notice('Saved');
+          plugin.labelMap = await plugin.labelMapLoader.load(
+            plugin.settings.labelMapPath
+          );
+          await plugin.save();
+          new Notice('Loaded!');
         });
       });
   }
