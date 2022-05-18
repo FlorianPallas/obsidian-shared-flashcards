@@ -6,7 +6,7 @@ import {
   PermissionRequest,
   VersionRequest,
 } from 'src/sync/ankiConnect/requests';
-import { Text, Fold } from '../components';
+import { Fold } from '../components';
 
 export class SyncCategory {
   private foldNone?: Fold;
@@ -17,7 +17,7 @@ export class SyncCategory {
   }
 
   create(containerEl: HTMLElement, plugin: FlashcardsPlugin) {
-    new Text(containerEl, 'h3').setText('Sync');
+    new Setting(containerEl).setName('Sync').setHeading();
 
     new Setting(containerEl)
       .setName('Provider')
@@ -45,18 +45,18 @@ export class SyncCategory {
       plugin.settings.syncProvider === 'none'
     );
 
-    new Text(this.foldNone.foldEl, 'p')
-      .setText('Sync is disabled. Please select a provider to enable it.')
-      .setAlign('center');
+    this.foldNone.foldEl.createEl('p', {
+      text: 'Sync is disabled. Please select a provider to enable it.',
+    }).style.textAlign = 'center';
 
     // SYNC - ANKI CONNECT
     this.foldAnkiConnect = new Fold(containerEl).setExpanded(
       plugin.settings.syncProvider === 'ankiConnect'
     );
 
-    new Text(this.foldAnkiConnect.foldEl, 'p')
-      .setText('Anki Connect')
-      .setAlign('center');
+    this.foldAnkiConnect.foldEl.createEl('p', {
+      text: 'Anki Connect',
+    }).style.textAlign = 'center';
 
     new Setting(this.foldAnkiConnect.foldEl)
       .setName('Hostname')

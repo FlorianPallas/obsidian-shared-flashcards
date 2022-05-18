@@ -1,7 +1,6 @@
 import { Notice, Setting } from 'obsidian';
 import FlashcardsPlugin from 'src';
 import { SettingsLoader } from 'src/config/loaders/SettingsLoader';
-import { Text } from '../components';
 
 export class GeneralCategory {
   public constructor(containerEl: HTMLElement, plugin: FlashcardsPlugin) {
@@ -9,7 +8,7 @@ export class GeneralCategory {
   }
 
   private create(containerEl: HTMLElement, plugin: FlashcardsPlugin) {
-    new Text(containerEl, 'h3').setText('General');
+    new Setting(containerEl).setName('General').setHeading();
 
     new Setting(containerEl)
       .setName('Root deck')

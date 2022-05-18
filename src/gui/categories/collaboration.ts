@@ -1,7 +1,7 @@
 import { Notice, Setting } from 'obsidian';
 import FlashcardsPlugin from 'src';
 import { SettingsLoader } from 'src/config/loaders/SettingsLoader';
-import { Text, Fold } from '../components';
+import { Fold } from '../components';
 
 export class CollaborationCategory {
   private labelsFold?: Fold;
@@ -12,7 +12,7 @@ export class CollaborationCategory {
   }
 
   private create(containerEl: HTMLElement, plugin: FlashcardsPlugin) {
-    new Text(containerEl, 'h3').setText('Collaboration');
+    new Setting(containerEl).setName('Collaboration').setHeading();
 
     new Setting(containerEl)
       .setName('Use Labels')
