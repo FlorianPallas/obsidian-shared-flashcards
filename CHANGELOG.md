@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.3...v0.1.4) (2022-05-18)
+
+
+### Bug Fixes
+
+* allow pipe syntax for images ([6dcebd5](https://github.com/FlorianPallas/advanced-flashcards/commit/6dcebd567bd1c99635de098ce02096b9f0c528eb))
+* escape math content to prevent backslashes getting removed ([e249c8d](https://github.com/FlorianPallas/advanced-flashcards/commit/e249c8df44cc3f000ecf3c89fbe505dab6e1d3c4))
+* prevent label map override when changing paths ([6430213](https://github.com/FlorianPallas/advanced-flashcards/commit/6430213228df213c29c966b3104aa7e70559e52e))
+
 ### [0.1.3](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.2...v0.1.3) (2022-05-04)
 
 
