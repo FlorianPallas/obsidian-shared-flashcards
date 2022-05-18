@@ -36,7 +36,7 @@ export const createLabel = (labelMap: Map<string, number>) => {
 
 export const resolveWikiLinks = (content: string, wiki: Wiki) => {
   return content
-    .replace(/!\[\[(.*?)\]\]/g, (_match, src) => {
+    .replace(/!\[\[(.*?)(?:\|(.*?))?\]\]/g, (_match, src) => {
       return `![](${wiki.getPath(src)})`;
     })
     .replace(/\[\[(.*?)(?:\|(.*?))?\]\]/g, (_match, name, displayName) => {
