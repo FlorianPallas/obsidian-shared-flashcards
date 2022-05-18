@@ -23,7 +23,8 @@ jobs:
       - run: yarn test
       - run: yarn build
       - run: zip advanced-flashcards.zip main.js manifest.json
-      - uses: softprops/action-gh-release@v1
+      - uses: actions/upload-artifact@v3
         with:
-          files: advanced-flashcards.zip
-          body_path: CHANGELOG.md
+          name: advanced-flashcards.zip
+          path: advanced-flashcards.zip
+          if-no-files-found: error
