@@ -36,12 +36,12 @@ export class AnkiConnectSyncService implements SyncService {
     new Notice('Pushing...');
 
     console.time('getCards');
-    const [cardsToCreate, cardsToUpdate, cardsToDelete] = await this.getCards(
-      articles
-    );
+    const [cardsToCreate, cardsToUpdate, cardsToDelete, cardsToIgnore] =
+      await this.getCards(articles);
     console.log('creating', cardsToCreate.length);
     console.log('updating', cardsToUpdate.length);
     console.log('deleting', cardsToDelete.length);
+    console.log('ignoring', cardsToIgnore.length);
     console.timeEnd('getCards');
 
     console.time('create-decks');
@@ -109,21 +109,30 @@ export class AnkiConnectSyncService implements SyncService {
       [
         'Done!',
         `Scanned\t${articles.length} file(s)`,
+        `Found\t\t${
+          cardsToCreate.length +
+          cardsToUpdate.length +
+          cardsToDelete.length +
+          cardsToIgnore.length
+        } card(s)`,
+        '\n',
         `Created\t${cardsToCreate.length} card(s)`,
         `Updated\t${cardsToUpdate.length} card(s)`,
         `Deleted\t${cardsToDelete.length} card(s)`,
+        `Ignored\t${cardsToIgnore.length} card(s)`,
       ].join('\n')
     );
   }
 
   private async getCards(
     articles: Article[]
-  ): Promise<[CardRecord[], CardRecord[], [string, number][]]> {
+  ): Promise<[CardRecord[], CardRecord[], [string, number][], CardRecord[]]> {
     const existingCards: CardRecord[] = [];
 
     const cardsToCreate: CardRecord[] = [];
     const cardsToUpdate: CardRecord[] = [];
     const cardsToDelete: [string, number][] = [];
+    const cardsToIgnore: CardRecord[] = [];
 
     for (const article of articles) {
       for (const card of article.cards) {
@@ -157,7 +166,10 @@ export class AnkiConnectSyncService implements SyncService {
         info.fields.Back.value !== record.ankiNote.fields.Back
       ) {
         cardsToUpdate.push(record);
+        continue;
       }
+
+      cardsToIgnore.push(record);
     }
 
     const knownLabels = Array.from(this.plugin.labelMap.entries());
@@ -169,7 +181,7 @@ export class AnkiConnectSyncService implements SyncService {
       }
     }
 
-    return [cardsToCreate, cardsToUpdate, cardsToDelete];
+    return [cardsToCreate, cardsToUpdate, cardsToDelete, cardsToIgnore];
   }
 
   private async getRecord(card: Card): Promise<CardRecord> {
