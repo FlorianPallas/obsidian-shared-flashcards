@@ -23,7 +23,7 @@ export class Article {
   }
 
   async parse() {
-    const content = await this.file.vault.cachedRead(this.file);
+    const content = await this.file.vault.read(this.file);
 
     this.headings = makeHeadings(content);
     this.parseCards(content);
