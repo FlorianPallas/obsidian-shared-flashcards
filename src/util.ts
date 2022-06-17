@@ -1,9 +1,10 @@
 import { Wiki } from './wiki';
+import { createHash } from 'crypto';
 
 export const stringToBase64 = (input: string) => window.btoa(input);
 export const base64ToString = (input: string) => window.atob(input);
 
-export const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
+export const encodeBase64 = (buffer: ArrayBuffer) => {
   let binary = '';
   const bytes = new Uint8Array(buffer);
   const len = bytes.byteLength;
@@ -11,6 +12,12 @@ export const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
     binary += String.fromCharCode(bytes[i]);
   }
   return stringToBase64(binary);
+};
+
+export const hashBase64 = (buffer: ArrayBuffer) => {
+  const hashSum = createHash('sha256');
+  hashSum.update(new Uint8Array(buffer));
+  return hashSum.digest('base64');
 };
 
 export const LABEL_LENGTH = 10;

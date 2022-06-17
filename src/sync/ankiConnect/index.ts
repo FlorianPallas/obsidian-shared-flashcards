@@ -4,7 +4,7 @@ import AnkiBridge from './bridge';
 import { Note } from './types';
 import { Notice } from 'obsidian';
 import { Article, Card } from '../../wiki';
-import { arrayBufferToBase64 } from 'src/util';
+import { encodeBase64, hashBase64 } from 'src/util';
 import {
   AddNotesRequest,
   CreateDeckRequest,
@@ -81,6 +81,19 @@ export class AnkiConnectSyncService implements SyncService {
     );
     console.timeEnd('update');
 
+    /*
+    console.time('hash-media');
+    for (const card of cardsToIgnore) {
+      for (const [src, filePath] of card.ankiMedia) {
+        const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
+          filePath
+        );
+        console.log(hashBase64(arrayBuffer));
+      }
+    }
+    console.timeEnd('hash-media');
+    */
+
     console.time('update-media');
     const mediaRequests = await Promise.all(
       cardsToUpdate.flatMap(({ ankiMedia }) =>
@@ -88,7 +101,7 @@ export class AnkiConnectSyncService implements SyncService {
           const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
             filePath
           );
-          const data = arrayBufferToBase64(arrayBuffer);
+          const data = encodeBase64(arrayBuffer);
           return new StoreMediaRequest(src, data);
         })
       )
