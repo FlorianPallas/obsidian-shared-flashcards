@@ -96,7 +96,7 @@ export class AnkiConnectSyncService implements SyncService {
 
     console.time('update-media');
     const mediaRequests = await Promise.all(
-      cardsToUpdate.flatMap(({ ankiMedia }) =>
+      cardsToUpdate.concat(cardsToCreate).flatMap(({ ankiMedia }) =>
         ankiMedia.map(async ([src, filePath]) => {
           const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
             filePath
