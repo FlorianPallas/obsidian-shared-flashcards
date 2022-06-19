@@ -13,4 +13,7 @@ export interface Settings {
     host: string;
     port: string;
   };
+
+  // Other
+  logLevel: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
 }

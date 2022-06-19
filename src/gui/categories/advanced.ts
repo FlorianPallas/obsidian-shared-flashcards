@@ -1,5 +1,15 @@
+import log, { LogLevelDesc } from 'loglevel';
 import { Notice, Setting } from 'obsidian';
 import FlashcardsPlugin from 'src';
+
+const levels = {
+  trace: 'trace',
+  debug: 'debug',
+  info: 'info',
+  warn: 'warn',
+  error: 'error',
+  silent: 'silent',
+};
 
 export class DangerCategory {
   public constructor(containerEl: HTMLElement, plugin: FlashcardsPlugin) {
@@ -22,5 +32,26 @@ export class DangerCategory {
         });
         button.setWarning();
       });
+
+    new Setting(containerEl)
+      .setName('Log Level')
+      .setDesc('Defines which log messages are printed and which get ignored.')
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOptions({
+            trace: 'trace',
+            debug: 'debug',
+            info: 'info',
+            warn: 'warn',
+            error: 'error',
+            silent: 'silent',
+          })
+          .setValue(plugin.settings.logLevel)
+          .onChange((value) => {
+            plugin.settings.logLevel = value as any;
+            plugin.save();
+            log.setLevel(value as LogLevelDesc, false);
+          })
+      );
   }
 }

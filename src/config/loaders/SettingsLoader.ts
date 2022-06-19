@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import { defaultsDeep } from 'lodash';
 import { Plugin } from 'obsidian';
 import { Settings } from 'src/config/settings';
@@ -20,6 +21,9 @@ export class SettingsLoader {
       host: 'localhost',
       port: '8765',
     },
+
+    // Other
+    logLevel: 'warn',
   };
 
   private plugin: Plugin;
@@ -29,8 +33,12 @@ export class SettingsLoader {
   }
 
   async load(): Promise<Settings> {
-    const settings = await this.plugin.loadData();
-    return defaultsDeep(settings, SettingsLoader.defaults);
+    const settings: Settings = defaultsDeep(
+      await this.plugin.loadData(),
+      SettingsLoader.defaults
+    );
+    log.setLevel(settings.logLevel);
+    return settings;
   }
 
   async save(settings: Partial<Settings>): Promise<void> {

@@ -1,10 +1,11 @@
+import log from 'loglevel';
 import { SyncService } from '../service';
 import FlashcardsPlugin from 'src';
 import AnkiBridge from './bridge';
 import { Note } from './types';
 import { Notice } from 'obsidian';
 import { Article, Card } from '../../wiki';
-import { encodeBase64, hashBase64 } from 'src/util';
+import { encodeBase64 } from 'src/util';
 import {
   AddNotesRequest,
   CreateDeckRequest,
@@ -36,16 +37,13 @@ export class AnkiConnectSyncService implements SyncService {
   public async push(articles: Article[]) {
     new Notice('Pushing...');
 
-    console.time('getCards');
     const [cardsToCreate, cardsToUpdate, cardsToDelete, cardsToIgnore] =
       await this.getCards(articles);
-    console.log('creating', cardsToCreate.length);
-    console.log('updating', cardsToUpdate.length);
-    console.log('deleting', cardsToDelete.length);
-    console.log('ignoring', cardsToIgnore.length);
-    console.timeEnd('getCards');
+    log.debug('creating', cardsToCreate.length);
+    log.debug('updating', cardsToUpdate.length);
+    log.debug('deleting', cardsToDelete.length);
+    log.debug('ignoring', cardsToIgnore.length);
 
-    console.time('create-decks');
     const decksToCreate: string[] = [];
     for (const { ankiNote } of cardsToCreate) {
       if (decksToCreate.contains(ankiNote.deckName)) continue;
@@ -54,23 +52,19 @@ export class AnkiConnectSyncService implements SyncService {
     await this.bridge.sendMulti(
       decksToCreate.map((deckName) => new CreateDeckRequest(deckName))
     );
-    console.timeEnd('create-decks');
 
-    console.time('create');
     const newNoteIds = await this.bridge.send(
       new AddNotesRequest(cardsToCreate.map(({ ankiNote }) => ankiNote))
     );
     for (let i = 0; i < newNoteIds.length; i++) {
       const noteId = newNoteIds[i];
       if (!noteId) {
-        console.log('failed to create card', cardsToCreate[i]);
+        log.warn('failed to create card', cardsToCreate[i]);
         continue;
       }
       this.plugin.labelMap.set(cardsToCreate[i].card.label, noteId);
     }
-    console.timeEnd('create');
 
-    console.time('update');
     await this.bridge.sendMulti(
       cardsToUpdate.map(({ ankiNote }) => new UpdateNoteRequest(ankiNote))
     );
@@ -80,22 +74,7 @@ export class AnkiConnectSyncService implements SyncService {
           new ChangeDeckRequest([ankiNote.id || -1], ankiNote.deckName)
       )
     );
-    console.timeEnd('update');
 
-    /*
-    console.time('hash-media');
-    for (const card of cardsToIgnore) {
-      for (const [src, filePath] of card.ankiMedia) {
-        const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
-          filePath
-        );
-        console.log(hashBase64(arrayBuffer));
-      }
-    }
-    console.timeEnd('hash-media');
-    */
-
-    console.time('update-media');
     const existingFiles = await this.bridge.send(
       new GetMediaFileNamesRequest('*')
     );
@@ -123,16 +102,12 @@ export class AnkiConnectSyncService implements SyncService {
 
     await this.bridge.sendMulti(mediaRequests);
 
-    console.timeEnd('update-media');
-
-    console.time('delete');
     await this.bridge.send(
       new DeleteNotesRequest(cardsToDelete.map(([, id]) => id))
     );
     for (const [label] of cardsToDelete) {
       this.plugin.labelMap.delete(label);
     }
-    console.timeEnd('delete');
 
     new Notice(
       [
