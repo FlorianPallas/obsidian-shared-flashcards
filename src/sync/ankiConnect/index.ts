@@ -104,27 +104,21 @@ export class AnkiConnectSyncService implements SyncService {
       ([src]) => !existingFiles.includes(src)
     );
 
+    const toMediaRequest = async ([src, filePath]: [string, string]) => {
+      const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
+        filePath
+      );
+      const data = encodeBase64(arrayBuffer);
+      return new StoreMediaRequest(src, data);
+    };
+
     const mediaRequests = await Promise.all(
-      cardsToUpdate.concat(cardsToCreate).flatMap(({ ankiMedia }) =>
-        ankiMedia.map(async ([src, filePath]) => {
-          const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
-            filePath
-          );
-          const data = encodeBase64(arrayBuffer);
-          return new StoreMediaRequest(src, data);
-        })
-      )
+      cardsToUpdate
+        .concat(cardsToCreate)
+        .flatMap(({ ankiMedia }) => ankiMedia.map(toMediaRequest))
     );
     mediaRequests.push(
-      ...(await Promise.all(
-        missingFiles.map(async ([src, filePath]) => {
-          const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
-            filePath
-          );
-          const data = encodeBase64(arrayBuffer);
-          return new StoreMediaRequest(src, data);
-        })
-      ))
+      ...(await Promise.all(missingFiles.map(toMediaRequest)))
     );
 
     await this.bridge.sendMulti(mediaRequests);
@@ -155,6 +149,7 @@ export class AnkiConnectSyncService implements SyncService {
         `Updated\t${cardsToUpdate.length} card(s)`,
         `Deleted\t${cardsToDelete.length} card(s)`,
         `Ignored\t${cardsToIgnore.length} card(s)`,
+        `Uploaded\t${mediaRequests.length} file(s)`,
       ].join('\n')
     );
   }
