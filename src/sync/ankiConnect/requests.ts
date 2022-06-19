@@ -19,7 +19,7 @@ export class Request<T, R> implements AnkiRequest<T> {
   }
 
   verify(result: AnkiResponse<R>['result']): R {
-    if (!result) throw new Error('no result');
+    if (result === undefined || result === null) throw new Error('no result');
     return result;
   }
 
@@ -193,6 +193,36 @@ export class StoreMediaRequest extends Request<
    */
   constructor(filename: string, data: string) {
     super('storeMediaFile', { filename, data });
+  }
+}
+
+export class RetrieveMediaRequest extends Request<
+  { filename: string },
+  string | boolean
+> {
+  /**
+   * Retrieves the base64-encoded contents of the specified file, returning `false` if the file does not exist.
+   *
+   * @param filename The name of the file to retrieve.
+   * @returns The base64-encoded contents of the file, or `false` if it does not exist.
+   */
+  constructor(filename: string) {
+    super('retrieveMediaFile', { filename });
+  }
+}
+
+export class GetMediaFileNamesRequest extends Request<
+  { pattern: string },
+  string[]
+> {
+  /**
+   * Gets the names of media files matched the pattern. Returning all names by default.
+   *
+   * @param pattern The pattern to match the file names with.
+   * @returns A list of file names matching the given pattern.
+   */
+  constructor(pattern: string) {
+    super('getMediaFilesNames', { pattern });
   }
 }
 

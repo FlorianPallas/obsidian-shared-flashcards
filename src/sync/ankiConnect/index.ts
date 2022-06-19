@@ -13,6 +13,7 @@ import {
   NotesInfoRequest,
   DeleteNotesRequest,
   ChangeDeckRequest,
+  GetMediaFileNamesRequest,
 } from './requests';
 import { processMarkdown } from './util';
 
@@ -95,6 +96,14 @@ export class AnkiConnectSyncService implements SyncService {
     */
 
     console.time('update-media');
+    const existingFiles = await this.bridge.send(
+      new GetMediaFileNamesRequest('*')
+    );
+    const ignoredFiles = cardsToIgnore.flatMap(({ ankiMedia }) => ankiMedia);
+    const missingFiles = ignoredFiles.filter(
+      ([src]) => !existingFiles.includes(src)
+    );
+
     const mediaRequests = await Promise.all(
       cardsToUpdate.concat(cardsToCreate).flatMap(({ ankiMedia }) =>
         ankiMedia.map(async ([src, filePath]) => {
@@ -106,7 +115,20 @@ export class AnkiConnectSyncService implements SyncService {
         })
       )
     );
+    mediaRequests.push(
+      ...(await Promise.all(
+        missingFiles.map(async ([src, filePath]) => {
+          const arrayBuffer = await this.plugin.app.vault.adapter.readBinary(
+            filePath
+          );
+          const data = encodeBase64(arrayBuffer);
+          return new StoreMediaRequest(src, data);
+        })
+      ))
+    );
+
     await this.bridge.sendMulti(mediaRequests);
+
     console.timeEnd('update-media');
 
     console.time('delete');
