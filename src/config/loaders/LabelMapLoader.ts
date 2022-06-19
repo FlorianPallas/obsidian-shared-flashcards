@@ -28,7 +28,10 @@ export class LabelMapLoader {
       defaultLabelMap
     );
     await this.ensureConfig(path, labelMap);
-    await this.plugin.app.vault.adapter.write(path, JSON.stringify(labelMap));
+    await this.plugin.app.vault.adapter.write(
+      path,
+      JSON.stringify(labelMap, null, 2)
+    );
   }
 
   private async ensureConfig(path: string, labelMap: LabelMap) {
