@@ -40,17 +40,3 @@ export const createLabel = (labelMap: Map<string, number>) => {
 
   return label;
 };
-
-export const resolveWikiLinks = (content: string, wiki: Wiki) => {
-  return content
-    .replace(/!\[\[(.*?)(?:\|(.*?))?\]\]/g, (_match, src) => {
-      return `![](${wiki.getPath(src)})`;
-    })
-    .replace(/\[\[(.*?)(?:\|(.*?))?\]\]/g, (_match, name, displayName) => {
-      const href = `obsidian://open?vault=${encodeURIComponent(
-        wiki.vault.getName()
-      )}&file=${encodeURIComponent(wiki.getPath(name))}`;
-      const text = displayName ? displayName : name;
-      return `[${text}](${href})`;
-    });
-};

@@ -3,13 +3,13 @@ import { Plugin } from 'obsidian';
 import { SettingsTab } from './gui/settingsTab';
 import { Settings, SettingsLoader, LabelMapLoader } from './config';
 import { SyncService, NoneSyncService, AnkiConnectSyncService } from './sync';
-import { Wiki } from './wiki';
 import { createLabel } from './util';
+import { parseWiki } from './entities/wiki';
+import { transformWikiLinks as transformWikiLinks } from './transform/wikilinks';
 
 export default class FlashcardsPlugin extends Plugin {
   settingsLoader = new SettingsLoader(this);
   labelMapLoader = new LabelMapLoader(this);
-  wiki: Wiki = new Wiki(this.app.vault);
 
   settings!: Settings;
   labelMap!: Map<string, number>;
@@ -29,7 +29,7 @@ export default class FlashcardsPlugin extends Plugin {
     this.addCommand({
       id: 'create-label',
       name: 'Create flashcard label',
-      editorCallback: async (editor, view) => {
+      editorCallback: (editor) => {
         editor.replaceSelection(
           editor.getSelection() + '^c-' + createLabel(this.labelMap)
         );
@@ -58,11 +58,19 @@ export default class FlashcardsPlugin extends Plugin {
   }
 
   async onPush() {
-    await this.wiki.parse();
-    log.debug(this.wiki);
+    const wiki = await parseWiki(this.app.vault);
+    log.debug(wiki);
 
-    await this.syncService.push(this.wiki.articles);
+    for (const article of wiki.articles) {
+      for (const card of article.cards) {
+        transformWikiLinks(wiki, card);
+      }
+    }
+
+    /*
+    await this.syncService.push(wiki.articles);
     await this.save();
+    */
   }
 
   async save(shouldUpdate = true) {

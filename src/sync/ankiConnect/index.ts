@@ -4,7 +4,6 @@ import FlashcardsPlugin from 'src';
 import AnkiBridge from './bridge';
 import { Note } from './types';
 import { Notice } from 'obsidian';
-import { Article, Card } from '../../wiki';
 import { encodeBase64 } from 'src/util';
 import {
   AddNotesRequest,
@@ -17,6 +16,8 @@ import {
   GetMediaFileNamesRequest,
 } from './requests';
 import { processMarkdown } from './util';
+import { Article } from 'src/entities/article';
+import { Card } from 'src/entities/card';
 
 interface CardRecord {
   card: Card;

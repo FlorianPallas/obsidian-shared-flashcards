@@ -1,5 +1,5 @@
 import { SyncService } from '../service';
-import { Article } from 'src/wiki';
+import { Article } from 'src/entities/article';
 import { Notice } from 'obsidian';
 
 export class NoneSyncService implements SyncService {

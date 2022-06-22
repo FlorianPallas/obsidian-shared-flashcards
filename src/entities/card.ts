@@ -5,10 +5,12 @@
 export interface Card {
   /** unique 10 digit alphanumeric */
   label: string;
+
   /** content shown on the front */
   front: string;
   /** content shown on the back */
   back: string;
+
   /** position in content where the card was found */
   index: number;
 }
