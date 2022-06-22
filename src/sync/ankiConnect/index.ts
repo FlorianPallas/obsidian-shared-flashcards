@@ -36,13 +36,14 @@ export class AnkiConnectSyncService implements SyncService {
 
   public async push(articles: Article[]) {
     new Notice('Pushing...');
+    log.info('Pushing...');
 
     const [cardsToCreate, cardsToUpdate, cardsToDelete, cardsToIgnore] =
       await this.getCards(articles);
-    log.debug('creating', cardsToCreate.length);
-    log.debug('updating', cardsToUpdate.length);
-    log.debug('deleting', cardsToDelete.length);
-    log.debug('ignoring', cardsToIgnore.length);
+    log.info('cardsToCreate', cardsToCreate);
+    log.info('cardsToUpdate', cardsToUpdate);
+    log.info('cardsToDelete', cardsToDelete);
+    log.info('cardsToIgnore', cardsToIgnore);
 
     const decksToCreate: string[] = [];
     for (const { ankiNote } of cardsToCreate) {
@@ -109,24 +110,24 @@ export class AnkiConnectSyncService implements SyncService {
       this.plugin.labelMap.delete(label);
     }
 
-    new Notice(
-      [
-        'Done!',
-        `Scanned\t${articles.length} file(s)`,
-        `Found\t\t${
-          cardsToCreate.length +
-          cardsToUpdate.length +
-          cardsToDelete.length +
-          cardsToIgnore.length
-        } card(s)`,
-        '\n',
-        `Created\t${cardsToCreate.length} card(s)`,
-        `Updated\t${cardsToUpdate.length} card(s)`,
-        `Deleted\t${cardsToDelete.length} card(s)`,
-        `Ignored\t${cardsToIgnore.length} card(s)`,
-        `Uploaded\t${mediaRequests.length} file(s)`,
-      ].join('\n')
-    );
+    const out = [
+      'Done!',
+      `Scanned\t${articles.length} file(s)`,
+      `Found\t\t${
+        cardsToCreate.length +
+        cardsToUpdate.length +
+        cardsToDelete.length +
+        cardsToIgnore.length
+      } card(s)`,
+      '\n',
+      `Created\t${cardsToCreate.length} card(s)`,
+      `Updated\t${cardsToUpdate.length} card(s)`,
+      `Deleted\t${cardsToDelete.length} card(s)`,
+      `Ignored\t${cardsToIgnore.length} card(s)`,
+      `Uploaded\t${mediaRequests.length} file(s)`,
+    ].join('\n');
+    new Notice(out);
+    log.info(out);
   }
 
   private async getCards(

@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import { Plugin } from 'obsidian';
 import { SettingsTab } from './gui/settingsTab';
 import { Settings, SettingsLoader, LabelMapLoader } from './config';
@@ -58,6 +59,8 @@ export default class FlashcardsPlugin extends Plugin {
 
   async onPush() {
     await this.wiki.parse();
+    log.debug(this.wiki);
+
     await this.syncService.push(this.wiki.articles);
     await this.save();
   }
