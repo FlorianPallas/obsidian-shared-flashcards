@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import { Notice, Plugin } from 'obsidian';
+import { send, versionAction } from './anki';
 import {
   Settings,
   readSettings,
@@ -7,7 +8,11 @@ import {
   readLabels,
   writeLabels,
 } from './config';
+import { parseWiki } from './entities/wiki';
 import { FlashcardsTab, FlashcardsView } from './gui';
+
+let plugin: FlashcardsPlugin;
+export const getPlugin = (): FlashcardsPlugin => plugin;
 
 export default class FlashcardsPlugin extends Plugin {
   isInitialized = false;
@@ -33,6 +38,7 @@ export default class FlashcardsPlugin extends Plugin {
     log.setLevel(this.settings.logLevel, false);
 
     this.isInitialized = true;
+    plugin = this;
     log.debug('Initialized');
   }
 
@@ -46,12 +52,14 @@ export default class FlashcardsPlugin extends Plugin {
     });
     if (!this.isInitialized) return;
 
+    // register ui components
     this.addSettingTab(new FlashcardsTab(this.app, this));
     this.registerView('flashcards', (leaf) => {
       this.view = new FlashcardsView(leaf, this);
       return this.view;
     });
 
+    // DEV: show flashcards view on startup
     this.app.workspace.getLeavesOfType('flashcards').first()?.detach();
     await this.app.workspace
       .getRightLeaf(false)
@@ -75,6 +83,25 @@ export default class FlashcardsPlugin extends Plugin {
     await writeLabels(this.app.vault, this.settings.labelsPath, this.labels);
   }
 
-  onScan() {}
-  onPush() {}
+  async onScan() {
+    // ping anki to check if it is running
+    this.view.setStage('prepare');
+
+    try {
+      await send(versionAction());
+    } catch (error) {
+      this.view.setStage('done');
+      return;
+    }
+
+    // parse all cards contained in the vault
+    this.view.setStage('parse');
+
+    const wiki = parseWiki(this.app.vault);
+
+    // check which cards need to be added, moved, updated or removed
+    this.view.setStage('categorize');
+  }
+
+  async onPush() {}
 }

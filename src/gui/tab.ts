@@ -1,12 +1,8 @@
 import log, { LogLevelDesc } from 'loglevel';
 import { App, Notice, PluginSettingTab, Setting } from 'obsidian';
 import FlashcardsPlugin from 'src';
+import { permissionAction, send, versionAction } from 'src/anki';
 import { Settings, getDefaultSettings } from 'src/config/settings';
-import AnkiBridge from 'src/sync/ankiConnect/bridge';
-import {
-  PermissionRequest,
-  VersionRequest,
-} from 'src/sync/ankiConnect/requests';
 
 export class FlashcardsTab extends PluginSettingTab {
   private plugin: FlashcardsPlugin;
@@ -77,9 +73,7 @@ export class FlashcardsTab extends PluginSettingTab {
         button.setButtonText('Test').onClick(async () => {
           let version: number;
           try {
-            version = await new AnkiBridge(this.plugin).send(
-              new VersionRequest()
-            );
+            version = await send(versionAction());
           } catch (error) {
             new Notice('Could not connect to Anki Connect');
             return;
@@ -93,9 +87,7 @@ export class FlashcardsTab extends PluginSettingTab {
       })
       .addButton((button) => {
         button.setButtonText('Grant Permission').onClick(async () => {
-          const { permission } = await new AnkiBridge(this.plugin).send(
-            new PermissionRequest()
-          );
+          const { permission } = await send(permissionAction());
           if (permission !== 'granted') {
             new Notice('Permission denied');
             return;
