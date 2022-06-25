@@ -1,22 +1,27 @@
 import { ItemView, WorkspaceLeaf } from 'obsidian';
 import FlashcardsPlugin from 'src';
-import View from './sidebar.svelte';
+import View from './view.svelte';
 
-export default class GitView extends ItemView {
+export type Stage = 'none' | 'prepare' | 'parse' | 'categorize' | 'done';
+export interface State {
+  stage: Stage;
+}
+
+export class FlashcardsView extends ItemView {
   private view?: View;
   private plugin: FlashcardsPlugin;
-
-  getViewType(): string {
-    return 'flashcards-overview';
-  }
-
-  getDisplayText(): string {
-    return 'Flashcards';
-  }
 
   constructor(leaf: WorkspaceLeaf, plugin: FlashcardsPlugin) {
     super(leaf);
     this.plugin = plugin;
+  }
+
+  getViewType(): string {
+    return 'flashcards';
+  }
+
+  getDisplayText(): string {
+    return 'Flashcards';
   }
 
   onClose(): Promise<void> {
@@ -27,11 +32,12 @@ export default class GitView extends ItemView {
   onOpen(): Promise<void> {
     this.view = new View({
       target: this.contentEl,
-      props: {
-        plugin: this.plugin,
-      },
+      props: { plugin: this.plugin },
     });
-
     return super.onOpen();
+  }
+
+  setStage(stage: Stage): void {
+    this.view?.$set({ stage });
   }
 }

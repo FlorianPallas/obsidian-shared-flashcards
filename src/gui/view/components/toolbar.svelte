@@ -1,4 +1,5 @@
 <script lang="ts">
+  export let message = '';
   export let onScan = () => {};
   export let onPush = () => {};
 </script>
@@ -18,6 +19,7 @@
       />
     </svg>
   </button>
+  <p>{message}</p>
 </div>
 
 <style lang="scss">
@@ -26,15 +28,13 @@
     flex-flow: row;
     width: 100%;
     height: 25px;
-
-    button + button {
-      margin-left: 10px;
-    }
+    margin-bottom: 5px;
   }
 
   .toolbar button {
     padding: 3px;
     margin: 0;
+    margin-right: 5px;
     cursor: pointer;
   }
 
@@ -42,5 +42,10 @@
     fill: #fff;
     height: 100%;
     width: 100%;
+  }
+
+  .toolbar p {
+    margin: auto 0;
+    font-size: 12px;
   }
 </style>
