@@ -15,8 +15,7 @@ export const parseWiki = async (vault: Vault) => {
   const articles = await Promise.all(
     files
       .filter((file) => file.extension === 'md')
-      .map((file) => vault.read(file))
-      .map(async (content) => parseArticle(await content))
+      .map(async (file) => parseArticle(file.basename, await vault.read(file)))
   );
 
   return { articles, index, vault };

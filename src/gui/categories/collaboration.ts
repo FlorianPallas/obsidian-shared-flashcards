@@ -1,7 +1,7 @@
 import { Notice, Setting } from 'obsidian';
 import FlashcardsPlugin from 'src';
 import { SettingsLoader } from 'src/config/loaders/SettingsLoader';
-import { Fold } from '../components';
+import { Fold } from '../elements';
 
 export class CollaborationCategory {
   private labelsFold?: Fold;

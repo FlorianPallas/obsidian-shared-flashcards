@@ -6,7 +6,7 @@ import {
   PermissionRequest,
   VersionRequest,
 } from 'src/sync/ankiConnect/requests';
-import { Fold } from '../components';
+import { Fold } from '../elements';
 
 export class SyncCategory {
   private foldNone?: Fold;
