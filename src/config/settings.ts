@@ -1,4 +1,4 @@
-import { defaultsDeep } from 'lodash';
+import { cloneDeep, defaultsDeep } from 'lodash';
 import log from 'loglevel';
 import FlashcardsPlugin from 'src';
 
@@ -30,6 +30,8 @@ const defaults: Settings = {
   },
   logLevel: 'warn',
 };
+
+export const getDefaultSettings = () => cloneDeep(defaults);
 
 const applyDefaults = (data: Partial<Settings>): Settings =>
   defaultsDeep(data, defaults);

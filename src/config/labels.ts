@@ -1,4 +1,4 @@
-import { defaultsDeep } from 'lodash';
+import { defaultsDeep, cloneDeep } from 'lodash';
 import log from 'loglevel';
 import { Vault } from 'obsidian';
 import { mapFromRecord, recordFromMap, ensureDir, exists } from '../util';
@@ -12,6 +12,8 @@ const defaults: Labels = {
   $version: 0,
   labels: {},
 };
+
+export const getDefaultLabels = () => cloneDeep(defaults);
 
 const applyDefaults = (data: Partial<Labels>): Labels =>
   defaultsDeep(data, defaults);
