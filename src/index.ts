@@ -7,7 +7,7 @@ import {
   readLabels,
   writeLabels,
 } from './config';
-import { FlashcardsView } from './gui/sidebar';
+import { FlashcardsTab, FlashcardsView } from './gui';
 
 export default class FlashcardsPlugin extends Plugin {
   isInitialized = false;
@@ -30,7 +30,7 @@ export default class FlashcardsPlugin extends Plugin {
     log.debug('Loaded labels', this.labels);
 
     // Apply settings
-    log.setLevel(this.settings.logLevel);
+    log.setLevel(this.settings.logLevel, false);
 
     this.isInitialized = true;
     log.debug('Initialized');
@@ -38,7 +38,7 @@ export default class FlashcardsPlugin extends Plugin {
 
   async onload() {
     // temporary adjust log level until settings are applied
-    log.setLevel('trace');
+    log.setLevel('trace', false);
 
     await this.initialize().catch((err) => {
       new Notice(err);
@@ -46,7 +46,7 @@ export default class FlashcardsPlugin extends Plugin {
     });
     if (!this.isInitialized) return;
 
-    // this.addSettingTab(new SettingsTab(this.app, this));
+    this.addSettingTab(new FlashcardsTab(this.app, this));
     this.registerView('flashcards', (leaf) => {
       this.view = new FlashcardsView(leaf, this);
       return this.view;
