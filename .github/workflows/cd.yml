@@ -22,9 +22,13 @@ jobs:
       - run: yarn install
       - run: yarn test
       - run: yarn build
-      - run: zip advanced-flashcards.zip main.js manifest.json
       - uses: actions/upload-artifact@v3
         with:
-          name: advanced-flashcards.zip
-          path: advanced-flashcards.zip
+          name: advanced-flashcards
+          path: |
+            main.js
+            manifest.json
+            CHANGELOG.md
+            README.md
+            LICENSE
           if-no-files-found: error
