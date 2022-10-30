@@ -41,14 +41,15 @@ export class Article {
       const cardHeadings = findPath(
         this.headings,
         (h) => h.position === match.index
-      );
+      )?.map((h) => h.text);
       if (cardHeadings === undefined) throw new Error('no card headings');
-      cardHeadings[cardHeadings.length - 1].text = groups.front;
+      cardHeadings.unshift(this.file.basename);
+      cardHeadings[cardHeadings.length - 1] = groups.front;
 
       this.cards.push({
         article: this,
         label: groups.label,
-        front: cardHeadings.map((h) => h.text).join(' » '),
+        front: cardHeadings.join(' » '),
         back: resolveWikiLinks(groups.back, this.wiki),
       });
     }
