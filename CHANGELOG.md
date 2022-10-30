@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.5...v0.1.6) (2022-10-30)
+
+
+### Features
+
+* include file name in card path ([83be5f3](https://github.com/FlorianPallas/advanced-flashcards/commit/83be5f381cee6314a82cdff892f7802104e87c55))
+
 ### [0.1.5](https://github.com/FlorianPallas/advanced-flashcards/compare/v0.1.4...v0.1.5) (2022-06-19)
 
 
