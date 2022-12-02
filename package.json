@@ -41,6 +41,5 @@
         "updater": "bump-version-log.js"
       }
     ]
-  },
-  "packageManager": "pnpm@7.14.0"
+  }
 }
